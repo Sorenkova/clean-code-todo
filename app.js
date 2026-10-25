@@ -7,14 +7,14 @@
 
 // Event handling, user interaction is what starts the code execution.
 
-const taskInput = document.getElementById("new-task"); //Add a new task.
-const addButton = document.getElementsByTagName("button")[0]; //first button
-const incompleteTaskHolder = document.getElementById("incompleteTasks"); //ul of #incompleteTasks
-const completedTasksHolder = document.getElementById("completed-tasks"); //completed-tasks
+const newTaskInput = document.getElementById("new-task"); //Add a new task.
+const addTaskButton = document.getElementsByTagName("button")[0]; //first button
+const todoList = document.getElementById("incompleteTasks"); //ul of #incompleteTasks
+const completedList = document.getElementById("completed-tasks"); //completed-tasks
 
 //New task list item
-const createNewTaskElement = function (taskString) {
-  const listItem = document.createElement("li");
+const createTaskElement = function (taskText) {
+  const taskItem = document.createElement("li");
 
   //input (checkbox)
   const checkBox = document.createElement("input"); //checkbx
@@ -29,7 +29,7 @@ const createNewTaskElement = function (taskString) {
   const deleteButton = document.createElement("button"); //delete button
   const deleteButtonImg = document.createElement("img"); //delete button image
 
-  label.innerText = taskString;
+  label.innerText = taskText;
   label.className = "task";
 
   //Each elements, needs appending
@@ -45,24 +45,24 @@ const createNewTaskElement = function (taskString) {
   deleteButton.appendChild(deleteButtonImg);
 
   //and appending.
-  listItem.appendChild(checkBox);
-  listItem.appendChild(label);
-  listItem.appendChild(editInput);
-  listItem.appendChild(editButton);
-  listItem.appendChild(deleteButton);
-  return listItem;
+  taskItem.appendChild(checkBox);
+  taskItem.appendChild(label);
+  taskItem.appendChild(editInput);
+  taskItem.appendChild(editButton);
+  taskItem.appendChild(deleteButton);
+  return taskItem;
 };
 
 const addTask = function () {
   //Create a new list item with the text from the #new-task:
-  if (!taskInput.value) return;
-  const listItem = createNewTaskElement(taskInput.value);
+  if (!newTaskInput.value) return;
+  const taskItem = createTaskElement(newTaskInput.value);
 
   //Append listItem to incompleteTaskHolder
-  incompleteTaskHolder.appendChild(listItem);
-  bindTaskEvents(listItem);
+  todoList.appendChild(taskItem);
+  bindTaskEvents(taskItem);
 
-  taskInput.value = "";
+  newTaskInput.value = "";
 };
 
 //Edit an existing task.
@@ -99,20 +99,20 @@ const deleteTask = function () {
 
 const toggleTaskCompletion = function () {
   const listItem = this.parentNode;
-  const targetList = this.checked ? completedTasksHolder : incompleteTaskHolder;
+  const targetList = this.checked ? completedList : todoList;
   targetList.appendChild(listItem);
 };
 
 //The glue to hold it all together.
 
 //Set the click handler to the addTask function.
-addButton.addEventListener("click", addTask);
+addTaskButton.addEventListener("click", addTask);
 
-const bindTaskEvents = function (taskListItem) {
+const bindTaskEvents = function (taskItem) {
   //select ListItems children
-  const checkBox = taskListItem.querySelector("input[type=checkbox]");
-  const editButton = taskListItem.querySelector("button.edit");
-  const deleteButton = taskListItem.querySelector("button.delete");
+  const checkBox = taskItem.querySelector("input[type=checkbox]");
+  const editButton = taskItem.querySelector("button.edit");
+  const deleteButton = taskItem.querySelector("button.delete");
 
   //Bind editTask to edit button.
   editButton.onclick = editTask;
@@ -122,8 +122,8 @@ const bindTaskEvents = function (taskListItem) {
   checkBox.onchange = toggleTaskCompletion;
 };
 
-[...incompleteTaskHolder.children, ...completedTasksHolder.children].forEach(
-  (taskListItem) => bindTaskEvents(taskListItem),
+[...todoList.children, ...completedList.children].forEach((taskListItem) =>
+  bindTaskEvents(taskListItem),
 );
 
 // Issues with usability don't get seen until they are in front of a human tester.
